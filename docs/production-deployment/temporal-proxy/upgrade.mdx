@@ -1,0 +1,41 @@
+---
+id: upgrade
+title: Upgrade Temporal Proxy
+sidebar_label: Upgrade
+---
+
+## Install the release
+
+In Temporal Proxy v0.10.0, the Go module moved from `github.com/temporalio/temporal-proxy` to `go.temporal.io/proxy`.
+
+Install Temporal Proxy v0.10.0 with the new module path:
+
+```bash
+go install go.temporal.io/proxy/cmd/proxy@v0.10.0
+```
+
+Releases tagged before v0.10.0 retain the `github.com/temporalio/temporal-proxy` module path and still install from that path.
+
+## Preserve binding labels during a migration
+
+In Temporal Proxy v0.10.0, `namespaces.bindingLabelsFrom` on an upstream names another upstream whose Namespace rules derive the binding label for payloads sealed or opened through it.
+
+Use this setting for a migration to Temporal Cloud through `s2s-proxy` when Namespaces still route to an untranslated on-premises Temporal Service, but both proxies must bind the same label, such as `ns1.acct`, for strict binding to hold on both sides.
+
+On the upstream serving those requests, set `namespaces.bindingLabelsFrom` to the name of the configured upstream whose Namespace rules should derive the binding labels.
+
+The named upstream must not itself set `namespaces.bindingLabelsFrom`; labels remain one hop away, and cycles are impossible.
+
+Requests still use the serving upstream's own Namespace translation rules, and encryption keys are still selected by the local Namespace name.
+
+Leaving `namespaces.bindingLabelsFrom` unset preserves existing behavior.
+
+### Decode payloads in the Temporal UI
+
+The codec server does not follow `namespaces.bindingLabelsFrom`.
+
+During the migration, a Temporal UI pointed at the on-premises Temporal Service needs Namespace binding set to `permissive` to decode payloads.
+
+### Remove the migration setting
+
+Once every Namespace routes to the named upstream, remove `namespaces.bindingLabelsFrom`; every binding label remains unchanged.
