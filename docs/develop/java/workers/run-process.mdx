@@ -111,3 +111,18 @@ factory.awaitTermination(30, TimeUnit.SECONDS);
 
 Both calls apply to every Worker the factory created.
 See [Worker shutdown](/encyclopedia/workers/worker-shutdown) for what happens to in-flight Workflow Tasks and Activities.
+
+### Keep Activities heartbeating during shutdown
+
+`WorkerOptions.Builder.setAllowActivityHeartbeatDuringShutdown(boolean)` lets Activities keep heartbeating during a graceful Worker shutdown.
+The option is experimental in Temporal Java SDK v1.36.0 and defaults to `false`.
+
+By default, after a graceful Worker shutdown is requested, `ActivityExecutionContext.heartbeat()` sends no heartbeat and throws `ActivityWorkerShutdownException`.
+Without this option, an Activity still running during the shutdown grace period cannot refresh its heartbeat deadline, so the Temporal Service may time it out and retry it while it is still running.
+
+With the option enabled, Activities no longer receive `ActivityWorkerShutdownException` as notification of Worker shutdown and must finish within the termination grace period on their own.
+`WorkerFactory.shutdownNow()` ignores this option: after a non-graceful shutdown, `heartbeat()` still throws `ActivityWorkerShutdownException`.
+
+### Adjust shutdown checks for tests
+
+`WorkerFactoryOptions.Builder.setShutdownCheckInterval` can speed up Worker shutdown in some testing scenarios; changing it in production is discouraged.
