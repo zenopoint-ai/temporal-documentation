@@ -365,6 +365,18 @@ Namespace a request names.
 `namespaceBinding` has no default, because the right mode depends on whether payloads sealed by an earlier release
 exist. A new deployment has none, so set `strict`.
 
+### Preserve binding labels during a migration
+
+During a migration to Temporal Cloud through s2s-proxy, Namespaces can still route to an untranslated on-premises Temporal Service while both proxies need the same binding label, such as `ns1.acct`, for strict binding to hold on both sides.
+
+Set `namespaces.bindingLabelsFrom` on the on-premises upstream to name the configured Cloud upstream whose Namespace rules should derive the binding labels.
+The named upstream must not set `namespaces.bindingLabelsFrom` itself.
+Requests continue to use the on-premises upstream's own translation rules, and keys remain selected by the local Namespace name.
+
+Once every Namespace routes to the named upstream, remove `namespaces.bindingLabelsFrom` without changing any binding labels.
+
+The codec server does not follow this setting; during the migration, a Temporal UI pointed at the on-premises Temporal Service needs Namespace binding set to `permissive` to decode payloads.
+
 ### Turn on binding for an existing deployment
 
 An existing deployment has unlabeled payloads in Event History, which `strict` refuses. Set `off` before you upgrade to

@@ -121,18 +121,14 @@ use **4 CPUs and 12 GiB of memory**, with `GOMEMLIMIT=11GiB`, and plan for each 
 behind a gRPC-compatible load balancer. For more efficient sizing based on the features and payload sizes you use, see
 [Sizing and performance](/production-deployment/temporal-proxy/sizing-and-performance).
 
-Install the `proxy` binary with Go:
+In Temporal Proxy v0.10.0, the Go module moved to `go.temporal.io/proxy`.
+Install the `proxy` binary with `go install go.temporal.io/proxy/cmd/proxy@<version>`, for example:
 
 ```bash
-go install github.com/temporalio/temporal-proxy/cmd/proxy@latest
+go install go.temporal.io/proxy/cmd/proxy@v0.10.0
 ```
 
-Pin an explicit version instead of `@latest`, using a tag from the
-[releases page](https://github.com/temporalio/temporal-proxy/releases):
-
-```bash
-go install github.com/temporalio/temporal-proxy/cmd/proxy@vX.Y.Z
-```
+Release tags before v0.10.0 retain the `github.com/temporalio/temporal-proxy` module path and still install from that path.
 
 Pull the container image:
 
