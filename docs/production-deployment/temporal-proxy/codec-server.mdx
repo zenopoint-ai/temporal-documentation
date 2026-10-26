@@ -137,6 +137,14 @@ different Namespace with the same `400`. That includes the results of Nexus Oper
 which the Web UI therefore shows as encrypted. Under `permissive`, those payloads decode and count toward
 `vault_namespace_mismatches_total`.
 
+:::note Binding labels during a migration
+
+The codec server does not follow `namespaces.bindingLabelsFrom`.
+During a migration, a Temporal UI pointed at the on-premises Temporal Service needs Namespace binding set to `permissive` to decode payloads.
+See [Preserve binding labels during a migration](/production-deployment/temporal-proxy/encrypt-payloads#preserve-binding-labels-during-a-migration).
+
+:::
+
 ## Use it from the Web UI
 
 Set the codec server endpoint in the Web UI's codec server settings, or start a local development Service with
