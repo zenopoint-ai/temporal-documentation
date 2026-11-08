@@ -222,6 +222,16 @@ Namespaces. Available variables:
 
 Upstreams with a static `hostPort` connect eagerly at startup; templated ones connect lazily on first use.
 
+### Derive binding labels from another upstream
+
+In Temporal Proxy v0.10.0, an upstream's `namespaces.bindingLabelsFrom` names another upstream whose Namespace rules derive the binding label for payloads sealed or opened through this upstream.
+
+The named upstream must be configured and must not set `namespaces.bindingLabelsFrom` itself, keeping label derivation one hop away and preventing cycles.
+
+Requests still use this upstream's own translation rules, and encryption keys are still selected by the local Namespace name; leaving `namespaces.bindingLabelsFrom` unset changes nothing.
+
+Use this setting for a [migration to Temporal Cloud with Namespace binding](/production-deployment/temporal-proxy/encrypt-payloads#migrate-with-namespace-binding) through s2s-proxy.
+
 ### Translate to a Temporal Cloud upstream
 
 Temporal Cloud takes a fully qualified `<name>.<account-id>`, so the proxy checks the names a Cloud upstream's rules
