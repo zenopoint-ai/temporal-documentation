@@ -17,6 +17,10 @@ There are two types of shutdown behavior that can occur, depending on whether an
 Graceful shutdown configures how much time a Worker has to complete its current task before shutting down.
 An Activity is able to determine that the Worker it’s running on is being shut down, through the Activity context.
 
+For Java, enabling `setAllowActivityHeartbeatDuringShutdown` lets Activities keep heartbeating during graceful Worker shutdown.
+With this option enabled, Activities are not notified of shutdown through `ActivityWorkerShutdownException` and must finish within the termination grace period on their own.
+The option is experimental in Temporal Java SDK v1.36.0 and defaults to `false`; see [Java Worker shutdown configuration](/develop/java/workers/run-process#keep-activities-heartbeating-during-shutdown).
+
 > Core SDKs - `graceful_shutdown_period`
 
 > Go - `WorkerStopTimeout`
