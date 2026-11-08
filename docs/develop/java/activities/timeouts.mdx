@@ -167,6 +167,13 @@ The Workflow can then use the `details` information to pass to the next Activity
 
 In the case of Activity retries, the last Heartbeat's `details` are available and can be extracted from the last failed attempt by using `Activity.getExecutionContext().getHeartbeatDetails(Class<V> detailsClass)`
 
+### Heartbeat during Worker shutdown
+
+By default, after graceful Worker shutdown is requested, `ActivityExecutionContext.heartbeat()` sends no heartbeat and throws `ActivityWorkerShutdownException`.
+Temporal Java SDK v1.36.0 introduces the experimental `setAllowActivityHeartbeatDuringShutdown` option, which defaults to `false`.
+Enable it to [keep Activities heartbeating during graceful shutdown](/develop/java/workers/run-process#keep-activities-heartbeating-during-shutdown).
+With the option enabled, Activities do not receive `ActivityWorkerShutdownException` as a shutdown notification and must finish within the termination grace period on their own.
+
 ### Heartbeat Timeout {/* #heartbeat-timeout */}
 
 A [Heartbeat Timeout](/encyclopedia/detecting-activity-failures#heartbeat-timeout) works in conjunction with [Activity Heartbeats](/encyclopedia/detecting-activity-failures#activity-heartbeat).
